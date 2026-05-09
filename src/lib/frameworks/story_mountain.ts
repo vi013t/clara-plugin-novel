@@ -1,6 +1,6 @@
 import { NameRandomizer } from "../randomizers/name_randomizer.ts";
-import { AttributeDefinition } from "@clara/api/attribute";
-import { Group } from "@clara/api/database";
+import { AttributeDefinition, AttributeType } from "@clara/api/attribute";
+import { Group, ItemType } from "@clara/api/database";
 import { registerTemplate } from "@clara/api/plugin";
 import { Template } from "@clara/api/project";
 import { TabList } from "@clara/api/ui";
@@ -10,14 +10,14 @@ export function registerStoryMountainTemplate() {
 		name: "Characters",
 		icon: "UserRound",
 		description: "The characters of this story.",
-		attributes: [AttributeDefinition.basic("Name", "shortText")],
+		attributes: [new AttributeDefinition({ name: "Name", type: AttributeType.fromName("shortText") })],
 	});
 
 	const locations = new Group({
 		name: "Locations",
 		icon: "MapPin",
 		description: "The locations in this story.",
-		attributes: [AttributeDefinition.basic("Name", "shortText")],
+		attributes: [new AttributeDefinition({ name: "Name", type: AttributeType.fromName("shortText") })],
 	});
 
 	const plotEvents = new Group(
@@ -25,39 +25,57 @@ export function registerStoryMountainTemplate() {
 			name: "Plot Events",
 			icon: "TextInitial",
 			description: "The events of this story. The actual scene prose exists here.",
-			attributes: [AttributeDefinition.basic("Name", "shortText")],
+			attributes: [new AttributeDefinition({ name: "Name", type: AttributeType.fromName("shortText") })],
 		},
 		new Group({
 			name: "Exposition",
 			description: "The initial backstory and catch-up of the story.",
 			icon: "Telescope",
-			attributes: [AttributeDefinition.basic("Name", "shortText")],
+			attributes: [new AttributeDefinition({ name: "Name", type: AttributeType.fromName("shortText") })],
 		}),
 		new Group({
 			name: "Rising action",
 			description: "The tension-building and stakes-building events leading up to the climax.",
 			icon: "MoveUpRight",
-			attributes: [AttributeDefinition.basic("Name", "shortText")],
+			attributes: [new AttributeDefinition({ name: "Name", type: AttributeType.fromName("shortText") })],
 		}),
 		new Group({
 			name: "Climax",
 			description: "The main payoff of the story.",
 			icon: "Sparkles",
-			attributes: [AttributeDefinition.basic("Name", "shortText")],
+			attributes: [new AttributeDefinition({ name: "Name", type: AttributeType.fromName("shortText") })],
 		}),
 		new Group({
 			name: "Falling Action",
 			description: "The decrease in tension and stakes after the climax.",
 			icon: "MoveDownRight",
-			attributes: [AttributeDefinition.basic("Name", "shortText")],
+			attributes: [new AttributeDefinition({ name: "Name", type: AttributeType.fromName("shortText") })],
 		}),
 		new Group({
 			name: "Resolution",
 			description: "The finishing beats.",
 			icon: "Cake",
-			attributes: [AttributeDefinition.basic("Name", "shortText")],
+			attributes: [new AttributeDefinition({ name: "Name", type: AttributeType.fromName("shortText") })],
 		}),
 	);
+
+	const characterType = new ItemType({
+		name: "Character",
+		icon: "UserRound",
+		attributes: [
+			new AttributeDefinition({ name: "Name", type: AttributeType.fromName("shortText") }),
+			new AttributeDefinition({ name: "Age", type: AttributeType.fromName("number") }),
+			new AttributeDefinition({ name: "Gender", type: AttributeType.fromName("shortText") }),
+			new AttributeDefinition({ name: "Height", type: AttributeType.fromName("length") }),
+			new AttributeDefinition({ name: "Weight", type: AttributeType.fromName("weight") }),
+		],
+	});
+
+	const locationType = new ItemType({
+		name: "Location",
+		icon: "MapPin",
+		attributes: [new AttributeDefinition({ name: "Name", type: AttributeType.fromName("shortText") })],
+	});
 
 	const database = new Group(
 		{
@@ -76,6 +94,7 @@ export function registerStoryMountainTemplate() {
 			pinnedGroups: [database, plotEvents, characters, locations],
 			database: database,
 			randomizers: [new NameRandomizer()],
+			types: [characterType, locationType],
 		}),
 	);
 }
