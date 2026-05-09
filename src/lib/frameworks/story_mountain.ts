@@ -1,4 +1,4 @@
-import { NameRandomizer } from "../randomizers/name_randomizer.ts";
+import { NAME_RANDOMIZER, NameRandomizer } from "../randomizers/name_randomizer.ts";
 import { AttributeDefinition, AttributeType } from "@clara/api/attribute";
 import { Group, ItemType } from "@clara/api/database";
 import { registerTemplate } from "@clara/api/plugin";
@@ -6,59 +6,6 @@ import { Template } from "@clara/api/project";
 import { TabList } from "@clara/api/ui";
 
 export function registerStoryMountainTemplate() {
-	const characters = new Group({
-		name: "Characters",
-		icon: "UserRound",
-		description: "The characters of this story.",
-		attributes: [new AttributeDefinition({ name: "Name", type: AttributeType.fromName("shortText") })],
-	});
-
-	const locations = new Group({
-		name: "Locations",
-		icon: "MapPin",
-		description: "The locations in this story.",
-		attributes: [new AttributeDefinition({ name: "Name", type: AttributeType.fromName("shortText") })],
-	});
-
-	const plotEvents = new Group(
-		{
-			name: "Plot Events",
-			icon: "TextInitial",
-			description: "The events of this story. The actual scene prose exists here.",
-			attributes: [new AttributeDefinition({ name: "Name", type: AttributeType.fromName("shortText") })],
-		},
-		new Group({
-			name: "Exposition",
-			description: "The initial backstory and catch-up of the story.",
-			icon: "Telescope",
-			attributes: [new AttributeDefinition({ name: "Name", type: AttributeType.fromName("shortText") })],
-		}),
-		new Group({
-			name: "Rising action",
-			description: "The tension-building and stakes-building events leading up to the climax.",
-			icon: "MoveUpRight",
-			attributes: [new AttributeDefinition({ name: "Name", type: AttributeType.fromName("shortText") })],
-		}),
-		new Group({
-			name: "Climax",
-			description: "The main payoff of the story.",
-			icon: "Sparkles",
-			attributes: [new AttributeDefinition({ name: "Name", type: AttributeType.fromName("shortText") })],
-		}),
-		new Group({
-			name: "Falling Action",
-			description: "The decrease in tension and stakes after the climax.",
-			icon: "MoveDownRight",
-			attributes: [new AttributeDefinition({ name: "Name", type: AttributeType.fromName("shortText") })],
-		}),
-		new Group({
-			name: "Resolution",
-			description: "The finishing beats.",
-			icon: "Cake",
-			attributes: [new AttributeDefinition({ name: "Name", type: AttributeType.fromName("shortText") })],
-		}),
-	);
-
 	const characterType = new ItemType({
 		name: "Character",
 		icon: "UserRound",
@@ -77,6 +24,59 @@ export function registerStoryMountainTemplate() {
 		attributes: [new AttributeDefinition({ name: "Name", type: AttributeType.fromName("shortText") })],
 	});
 
+	let sceneType = new ItemType({
+		name: "Scene",
+		icon: "TextInitial",
+		attributes: [new AttributeDefinition({ name: "Content", type: AttributeType.fromName("longText") })],
+	});
+	const characters = new Group({
+		name: "Characters",
+		icon: "UserRound",
+		description: "The characters of this story.",
+		defaultType: characterType,
+	});
+
+	const locations = new Group({
+		name: "Locations",
+		icon: "MapPin",
+		description: "The locations in this story.",
+		defaultType: locationType,
+	});
+
+	const plotEvents = new Group(
+		{
+			name: "Plot Events",
+			icon: "TextInitial",
+			description: "The events of this story. The actual scene prose exists here.",
+			defaultType: sceneType,
+		},
+		new Group({
+			name: "Exposition",
+			description: "The initial backstory and catch-up of the story.",
+			icon: "Telescope",
+		}),
+		new Group({
+			name: "Rising action",
+			description: "The tension-building and stakes-building events leading up to the climax.",
+			icon: "MoveUpRight",
+		}),
+		new Group({
+			name: "Climax",
+			description: "The main payoff of the story.",
+			icon: "Sparkles",
+		}),
+		new Group({
+			name: "Falling Action",
+			description: "The decrease in tension and stakes after the climax.",
+			icon: "MoveDownRight",
+		}),
+		new Group({
+			name: "Resolution",
+			description: "The finishing beats.",
+			icon: "Cake",
+		}),
+	);
+
 	const database = new Group(
 		{
 			name: "Story Mountain",
@@ -93,7 +93,7 @@ export function registerStoryMountainTemplate() {
 			layout: { split: "none", tabline: new TabList([]), selectedTabID: 0 },
 			pinnedGroups: [database, plotEvents, characters, locations],
 			database: database,
-			randomizers: [new NameRandomizer()],
+			randomizers: [NAME_RANDOMIZER],
 			types: [characterType, locationType],
 		}),
 	);

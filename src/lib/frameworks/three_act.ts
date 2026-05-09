@@ -2,61 +2,10 @@ import { AttributeDefinition, AttributeType } from "@clara/api/attribute";
 import { Group, Item, ItemType } from "@clara/api/database";
 import { Template } from "@clara/api/project";
 import { TabList } from "@clara/api/ui";
-import { NameRandomizer } from "../randomizers/name_randomizer.ts";
+import { NAME_RANDOMIZER, NameRandomizer } from "../randomizers/name_randomizer.ts";
 import { registerTemplate } from "@clara/api/plugin";
 
 export function registerThreeActStructureTemplate() {
-	const characters = new Group(
-		{
-			name: "Characters",
-			icon: "UserRound",
-			description: "The characters of this story.",
-			attributes: [
-				new AttributeDefinition({ name: "Name", type: AttributeType.fromName("shortText") }),
-				new AttributeDefinition({ name: "Gender", type: AttributeType.fromName("shortText") }),
-				new AttributeDefinition({ name: "Sexuality", type: AttributeType.fromName("shortText") }),
-				new AttributeDefinition({ name: "Height", type: AttributeType.fromName("length") }),
-				new AttributeDefinition({ name: "Partner", type: AttributeType.fromName("entries") }),
-			],
-		},
-		new Group("Main Characters"),
-		new Group("Side Characters"),
-	);
-
-	const locations = new Group({
-		name: "Locations",
-		icon: "MapPin",
-		description: "The locations in this story.",
-		attributes: [new AttributeDefinition({ name: "Name", type: AttributeType.fromName("shortText") })],
-	});
-
-	let sceneType = new ItemType({
-		name: "Scene",
-		icon: "TextInitial",
-		attributes: [new AttributeDefinition({ name: "Content", type: AttributeType.fromName("longText") })],
-	});
-
-	const plotEvents = new Group(
-		{
-			name: "Plot Events",
-			icon: "TextInitial",
-			description: "The events of this story. The actual scene prose exists here.",
-			attributes: [
-				new AttributeDefinition({ name: "Name", type: AttributeType.fromName("shortText") }),
-				new AttributeDefinition({ name: "Script", type: AttributeType.fromName("longText") }),
-				new AttributeDefinition({ name: "Notes", type: AttributeType.fromName("longText") }),
-			],
-		},
-		new Group(
-			{ name: "Act I" },
-			new Group("Hook", new Group(new Group("Chapter 1", new Item(sceneType, "Scene 1")))),
-			new Group("Inciting Incident"),
-			new Group("First Plot Point"),
-		),
-		new Group({ name: "Act II" }, new Group("First Pinch Point"), new Group("Midpoint"), new Group("Second Pinch Point")),
-		new Group({ name: "Act III" }, new Group("Third Plot Point"), new Group("Climax"), new Group("Resolution")),
-	);
-
 	const characterType = new ItemType({
 		name: "Character",
 		icon: "UserRound",
@@ -75,6 +24,47 @@ export function registerThreeActStructureTemplate() {
 		attributes: [new AttributeDefinition({ name: "Name", type: AttributeType.fromName("shortText") })],
 	});
 
+	let sceneType = new ItemType({
+		name: "Scene",
+		icon: "TextInitial",
+		attributes: [new AttributeDefinition({ name: "Content", type: AttributeType.fromName("longText") })],
+	});
+
+	const characters = new Group(
+		{
+			name: "Characters",
+			icon: "UserRound",
+			description: "The characters of this story.",
+			defaultType: characterType,
+		},
+		new Group("Main Characters"),
+		new Group("Side Characters"),
+	);
+
+	const locations = new Group({
+		name: "Locations",
+		icon: "MapPin",
+		description: "The locations in this story.",
+		defaultType: locationType,
+	});
+
+	const plotEvents = new Group(
+		{
+			name: "Plot Events",
+			icon: "TextInitial",
+			description: "The events of this story. The actual scene prose exists here.",
+			defaultType: sceneType,
+		},
+		new Group(
+			{ name: "Act I" },
+			new Group("Hook", new Group(new Group("Chapter 1", new Item(sceneType, "Scene 1")))),
+			new Group("Inciting Incident"),
+			new Group("First Plot Point"),
+		),
+		new Group({ name: "Act II" }, new Group("First Pinch Point"), new Group("Midpoint"), new Group("Second Pinch Point")),
+		new Group({ name: "Act III" }, new Group("Third Plot Point"), new Group("Climax"), new Group("Resolution")),
+	);
+
 	const database = new Group(
 		{
 			name: "Three Act Novel",
@@ -91,7 +81,7 @@ export function registerThreeActStructureTemplate() {
 			layout: { split: "none", tabline: new TabList([]), selectedTabID: 0 },
 			pinnedGroups: [database, plotEvents, characters, locations],
 			database: database,
-			randomizers: [new NameRandomizer()],
+			randomizers: [NAME_RANDOMIZER],
 			types: [characterType, locationType, sceneType],
 		}),
 	);

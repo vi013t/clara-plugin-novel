@@ -1,5 +1,4 @@
 import { Randomizer, type RandomizerArguments } from "@clara/api/random";
-import { PLUGIN_ID } from "../index.ts";
 import firstNames from "../data/names/first_names.json" with { type: "json" };
 
 export const nameRandomizerParameters = {
@@ -17,7 +16,7 @@ export class NameRandomizer extends Randomizer<NameRandomizerParameters, string>
 			id: "name-randomizer",
 			description: "Generate a random name.",
 			icon: "IdCard",
-			pluginId: PLUGIN_ID,
+			pluginId: "novel",
 		});
 	}
 
@@ -31,3 +30,5 @@ export class NameRandomizer extends Randomizer<NameRandomizerParameters, string>
 		return options[Math.random() * options.length];
 	}
 }
+
+export const NAME_RANDOMIZER = new NameRandomizer();
