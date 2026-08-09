@@ -1,3 +1,4 @@
+import { NumberAttribute, StringAttribute } from "@clara/api/attribute";
 import { Randomizer, type RandomizerArguments } from "@clara/api/random";
 import firstNames from "../data/names/first_names.json" with { type: "json" };
 
@@ -9,7 +10,7 @@ export const nameRandomizerParameters = {
 type NameRandomizerParameters = typeof nameRandomizerParameters;
 type M = RandomizerArguments<NameRandomizerParameters>;
 
-export class NameRandomizer extends Randomizer<NameRandomizerParameters, string> {
+export class NameRandomizer extends Randomizer<NameRandomizerParameters, StringAttribute> {
 	public constructor() {
 		super({
 			name: "Name Randomizer",
@@ -24,10 +25,18 @@ export class NameRandomizer extends Randomizer<NameRandomizerParameters, string>
 		return nameRandomizerParameters;
 	}
 
-	public random(parameters: RandomizerArguments<NameRandomizerParameters>): string {
-		const yearData = (firstNames as any)[`${parameters.year}`] as any[];
-		const options = yearData.filter(name => name.sex === parameters.sex);
-		return options[Math.random() * options.length];
+	public defaultArguments(): RandomizerArguments<NameRandomizerParameters> {
+		return {
+			year: new NumberAttribute(2000),
+			sex: new StringAttribute("M"),
+		};
+	}
+
+	public random(parameters: RandomizerArguments<NameRandomizerParameters>): StringAttribute {
+		const yearData = (firstNames as any)[`${parameters.year.value}`] as any[];
+		const options = yearData.filter(name => name.sex === parameters.sex.value);
+		let choice = options[Math.floor(Math.random() * options.length)];
+		return new StringAttribute(choice.name);
 	}
 }
 

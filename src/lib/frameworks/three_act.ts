@@ -1,9 +1,10 @@
 import { AttributeDefinition, AttributeType } from "@clara/api/attribute";
 import { Group, Item, ItemType } from "@clara/api/database";
-import { Template } from "@clara/api/project";
-import { TabList } from "@clara/api/ui";
-import { NAME_RANDOMIZER, NameRandomizer } from "../randomizers/name_randomizer.ts";
 import { registerTemplate } from "@clara/api/plugin";
+import { Template } from "@clara/api/project";
+import { SinglePane, TabList } from "@clara/api/ui";
+import { PLUGIN_ID } from "../index.ts";
+import { NAME_RANDOMIZER } from "../randomizers/name_randomizer.ts";
 
 export function registerThreeActStructureTemplate() {
 	const characterType = new ItemType({
@@ -78,7 +79,8 @@ export function registerThreeActStructureTemplate() {
 
 	registerTemplate(
 		new Template({
-			layout: { split: "none", tabline: new TabList([]), selectedTabID: 0 },
+			layout: new SinglePane(false, new TabList([]), 0),
+			plugin_id: PLUGIN_ID,
 			pinnedGroups: [database, plotEvents, characters, locations],
 			database: database,
 			randomizers: [NAME_RANDOMIZER],
